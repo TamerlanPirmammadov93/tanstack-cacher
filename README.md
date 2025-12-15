@@ -1,6 +1,10 @@
 # React Query Cache Manager
 
-> Flexible cache management for React Query with optimistic updates
+[![npm version](https://img.shields.io/npm/v/tanstack-cacher.svg)](https://www.npmjs.com/package/tanstack-cacher)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+
+## Introduction
 
 A simple, TypeScript-first utility for managing React Query cache. Works with **any response structure** - simple arrays, nested data, paginated responses, or custom formats.
 
