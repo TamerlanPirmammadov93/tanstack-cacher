@@ -34,9 +34,8 @@ import type { CacheConfig, CacheHandlers, InsertPosition } from './QueryCache.ty
  *   itemsPath: 'data.content',
  *   pagination: {
  *     totalElementsPath: 'data.page.totalElements',
- *     totalElementsPath: 'data.page.totalElements',
  *     totalPagesPath: 'data.page.totalPages',
- *     currentPagePath: 'data.page.number',k
+ *     currentPagePath: 'data.page.number',
  *   },
  * });
  *
@@ -51,6 +50,7 @@ import type { CacheConfig, CacheHandlers, InsertPosition } from './QueryCache.ty
  * });
  * ```
  */
+
 export class QueryCacheManager<TData, TItem> {
   private config: Required<
     Pick<CacheConfig<TData, TItem>, 'queryClient' | 'queryKey' | 'itemsPath'>
