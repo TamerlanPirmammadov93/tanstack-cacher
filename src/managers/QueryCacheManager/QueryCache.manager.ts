@@ -347,24 +347,31 @@ export class QueryCacheManager<TData, TItem> {
   /**
    * Refetch query immediately
    */
-  refetch(key?: string): void {
+  refetch(key?: string | string[]): void {
     try {
-      const queryKey = key ? [key] : this.config.queryKey;
-      this.config.queryClient.refetchQueries({
-        queryKey,
-        exact: true,
-      });
+      if (!key) {
+        this.config.queryClient.refetchQueries({
+          queryKey: this.config.queryKey,
+          exact: true,
+        });
+        return;
+      }
+      if (Array.isArray(key)) {
+        key.forEach((keyItem) => {
+          this.config.queryClient.refetchQueries({
+            queryKey: [keyItem],
+            exact: true,
+          });
+        });
+      } else {
+        this.config.queryClient.refetchQueries({
+          queryKey: [key],
+          exact: true,
+        });
+      }
     } catch (error) {
       console.error('[QueryCacheManager] Refetch failed:', error);
     }
-  }
-
-  /**
-   *  Multiple refetch, refetch many endpoints at the same time
-   * Usage: cache.refetch(['prisoners', 'visitors]);
-   * */
-  refetchMultiple(keys: string[]): void {
-    keys.forEach((key) => this.refetch(key));
   }
 
   /**
