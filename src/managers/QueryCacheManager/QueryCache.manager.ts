@@ -320,6 +320,36 @@ export class QueryCacheManager<TData, TItem> {
   }
 
   /**
+   * Refetch query immediately
+   */
+  refetch(key?: string | string[]): void {
+    try {
+      if (!key) {
+        this.config.queryClient.refetchQueries({
+          queryKey: this.config.queryKey,
+          exact: true,
+        });
+        return;
+      }
+      if (Array.isArray(key)) {
+        key.forEach((keyItem) => {
+          this.config.queryClient.refetchQueries({
+            queryKey: [keyItem],
+            exact: true,
+          });
+        });
+      } else {
+        this.config.queryClient.refetchQueries({
+          queryKey: [key],
+          exact: true,
+        });
+      }
+    } catch (error) {
+      console.error('[QueryCacheManager] Refetch failed:', error);
+    }
+  }
+
+  /**
    * Get handlers for use with mutations
    *
    * @returns Object with onAdd, onUpdate, onDelete handlers
