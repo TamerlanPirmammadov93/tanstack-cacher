@@ -62,12 +62,12 @@ export const useCustomMutation = <TData, TError, TVariables = void>(
 
   return useMutation<TData, TError, TVariables>({
     ...rest,
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, mResult, context) => {
       if (notify || notifySuccess) {
         notificationContext?.showSuccess?.(successMessage, notificationConfig);
       }
 
-      onSuccess?.(data, variables, context);
+      onSuccess?.(data, variables, mResult, context);
 
       if (cacheActions?.length) {
         cacheActions.forEach(({ type, config }: CacheActions<TData>) => {
@@ -76,7 +76,7 @@ export const useCustomMutation = <TData, TError, TVariables = void>(
         });
       }
     },
-    onError: (apiError, variables, context) => {
+    onError: (apiError, variables, mResult, context) => {
       const message = getErrorMessage
         ? getErrorMessage(apiError)
         : ((apiError as any)?.error?.message ?? errorMessage);
@@ -85,7 +85,7 @@ export const useCustomMutation = <TData, TError, TVariables = void>(
         notificationContext?.showError(message, notificationConfig);
       }
 
-      onError?.(apiError, variables, context);
+      onError?.(apiError, variables, mResult, context);
     },
   });
 };
