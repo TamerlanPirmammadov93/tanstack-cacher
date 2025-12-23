@@ -1,7 +1,11 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { CustomMutationOptions } from './types';
+import { QueryCacheManager } from '../managers';
+import { runCacheManagers } from '../managers/QueryCacheManager/QueryCache.utils';
+
 import { useNotificationContext } from './useNotificationContext';
+
+import type { CustomMutationOptions, CacheActions } from './types';
 
 /**
  * useCustomMutation - A type-safe wrapper around React Query's `useMutation`.
@@ -24,7 +28,7 @@ import { useNotificationContext } from './useNotificationContext';
  *   mutationFn: (variables) => api.updateUser(variables.id),
  *   notify: true,
  *   successMessage: 'User updated successfully!',
- *   onSuccess: (data, variables, context, mutation) => {
+ *   onSuccess: (data, variables, context) => {
  *     console.log('Mutation succeeded', data);
  *   },
  *   onError: (error, variables, context) => {
@@ -43,6 +47,7 @@ export const useCustomMutation = <TData, TError, TVariables = void, TContext = u
   const {
     onError,
     onSuccess,
+    cacheActions,
     notify = false,
     notifyError = false,
     notifySuccess = false,
@@ -52,18 +57,28 @@ export const useCustomMutation = <TData, TError, TVariables = void, TContext = u
     getErrorMessage,
     ...rest
   } = options;
+
+  const queryClient = useQueryClient();
+
   const { showSuccess, showError } = useNotificationContext();
 
   return useMutation<TData, TError, TVariables, TContext>({
     ...rest,
-    onSuccess: (data, variables, context, mutation) => {
+    onSuccess: (data, variables, onMutateResult, context) => {
       if (notify || notifySuccess) {
         showSuccess(successMessage, notificationConfig);
       }
 
-      onSuccess?.(data, variables, context, mutation);
+      onSuccess?.(data, variables, onMutateResult, context);
+
+      if (cacheActions?.length) {
+        cacheActions.forEach(({ type, config }: CacheActions<TData>) => {
+          const manager = new QueryCacheManager({ ...config, queryClient });
+          runCacheManagers<TData>(type, manager, data);
+        });
+      }
     },
-    onError: (apiError, variables, context, mutation) => {
+    onError: (apiError, variables, onMutateResult, context) => {
       const message = getErrorMessage
         ? getErrorMessage(apiError)
         : ((apiError as any)?.error?.message ?? errorMessage);
@@ -72,7 +87,7 @@ export const useCustomMutation = <TData, TError, TVariables = void, TContext = u
         showError(message, notificationConfig);
       }
 
-      onError?.(apiError, variables, context, mutation);
+      onError?.(apiError, variables, onMutateResult, context);
     },
   });
 };

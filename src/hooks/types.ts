@@ -1,20 +1,13 @@
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from '@tanstack/react-query';
+import type { UseMutationOptions } from '@tanstack/react-query';
 
-import type { CacheOptions } from '../types/cache';
+import { type CacheConfig } from '../managers';
 
-export type CustomQueryOptions<TData, TError = unknown> = UseQueryOptions<
-  TData,
-  TError
-> & {
-  queryKey: QueryKey;
-  cacheType?: string;
-  queryFn: () => Promise<TData>;
-  cacheConfig?: CacheOptions;
-};
+export type MutationTypes = 'add' | 'invalidate' | 'remove' | 'update';
+
+export interface CacheActions<TData> {
+  type: MutationTypes;
+  config: Omit<CacheConfig<TData, unknown>, 'queryClient'>;
+}
 
 export type CustomMutationOptions<TData, TError, TVariables, TContext> =
   UseMutationOptions<TData, TError, TVariables, TContext> & {
@@ -23,6 +16,7 @@ export type CustomMutationOptions<TData, TError, TVariables, TContext> =
     errorMessage?: string;
     notifySuccess?: boolean;
     successMessage?: string;
+    cacheActions?: CacheActions<TData>[];
     notificationConfig?: NotificationOptions;
     getErrorMessage?: (error: TError) => string;
   };
