@@ -41,8 +41,8 @@ import type { CustomMutationOptions, CacheActions } from './types';
  * ```
  */
 
-export const useCustomMutation = <TData, TError, TVariables = void, TContext = unknown>(
-  options: CustomMutationOptions<TData, TError, TVariables, TContext>,
+export const useCustomMutation = <TData, TError, TVariables = void>(
+  options: CustomMutationOptions<TData, TError, TVariables>,
 ) => {
   const {
     onError,
@@ -60,14 +60,14 @@ export const useCustomMutation = <TData, TError, TVariables = void, TContext = u
 
   const notificationContext = useNotificationContext();
 
-  return useMutation<TData, TError, TVariables, TContext>({
+  return useMutation<TData, TError, TVariables>({
     ...rest,
-    onSuccess: (data, variables, onMutateResult, context) => {
+    onSuccess: (data, variables, context) => {
       if (notify || notifySuccess) {
         notificationContext?.showSuccess?.(successMessage, notificationConfig);
       }
 
-      onSuccess?.(data, variables, onMutateResult, context);
+      onSuccess?.(data, variables, context);
 
       if (cacheActions?.length) {
         cacheActions.forEach(({ type, config }: CacheActions<TData>) => {
@@ -76,7 +76,7 @@ export const useCustomMutation = <TData, TError, TVariables = void, TContext = u
         });
       }
     },
-    onError: (apiError, variables, onMutateResult, context) => {
+    onError: (apiError, variables, context) => {
       const message = getErrorMessage
         ? getErrorMessage(apiError)
         : ((apiError as any)?.error?.message ?? errorMessage);
@@ -85,7 +85,7 @@ export const useCustomMutation = <TData, TError, TVariables = void, TContext = u
         notificationContext?.showError(message, notificationConfig);
       }
 
-      onError?.(apiError, variables, onMutateResult, context);
+      onError?.(apiError, variables, context);
     },
   });
 };

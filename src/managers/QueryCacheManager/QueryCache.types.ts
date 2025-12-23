@@ -55,7 +55,7 @@ export interface CacheConfig<TData, TItem> {
    * "data.content" // For { data: { content: [...] } }
    * "result.users" // For { result: { users: [...] } }
    */
-  itemsPath: string;
+  itemsPath?: string;
 
   /**
    * Optional: Pagination configuration
