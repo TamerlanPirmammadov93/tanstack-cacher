@@ -1,3 +1,4 @@
+import { QueryClient } from '@tanstack/react-query';
 import { QueryCacheManager } from './QueryCache.manager';
 import type { CacheConfig } from './QueryCache.types';
 
@@ -13,10 +14,19 @@ export type CacheManagerConstructor = new <TData, TItem>(
  * Allows users to configure a custom manager class that extends QueryCacheManager
  */
 class CacheManagerFactory {
+  private queryClient: QueryClient | null = null;
   private managerClass: CacheManagerConstructor = QueryCacheManager;
 
   setManagerClass(managerClass: CacheManagerConstructor): void {
     this.managerClass = managerClass;
+  }
+
+  setQueryClient(client: QueryClient): void {
+    this.queryClient = client;
+  }
+
+  getQueryClient(): QueryClient | null {
+    return this.queryClient;
   }
 
   resetManagerClass(): void {
@@ -26,11 +36,15 @@ class CacheManagerFactory {
   create<TData, TItem>(
     config: CacheConfig<TData, TItem>,
   ): QueryCacheManager<TData, TItem> {
-    return new this.managerClass<TData, TItem>(config);
+    return new this.managerClass<TData, TItem>({
+      ...config,
+      queryClient: this.queryClient!,
+    });
   }
 
   getManagerClass(): CacheManagerConstructor {
     return this.managerClass;
   }
 }
+
 export const cacheManagerFactory = new CacheManagerFactory();
