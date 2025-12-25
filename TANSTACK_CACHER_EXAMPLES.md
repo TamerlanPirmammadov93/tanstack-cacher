@@ -40,7 +40,7 @@ cacheManagerFactory.setManagerClass(MyCustomManager);
 ### 3. Use Everywhere
 
 ```typescript
-const mutation = useCustomMutation({
+const mutation = useCacherMutation({
   mutationFn: createUser,
   cacheActions: {
     type: 'add',
@@ -115,9 +115,9 @@ const CurrentClass = cacheManagerFactory.getManagerClass();
 ```
 
 
-# Using `useCustomMutation` with `CacheProvider`
+# Using `useCacherMutation` with `CacheProvider`
 
-Provide global cache and notification behavior to your mutations with `CacheProvider` and `useCustomMutation`.
+Provide global cache and notification behavior to your mutations with `CacheProvider` and `useCacherMutation`.
 
 ## Scenario
 
@@ -167,7 +167,7 @@ You define a mutation hook, for example, `useExampleCreateUnit`:
 const useCreateUnit = (
   options?: CustomMutationOptionsNoFn<CreateResponse, ApiErrorResponse, CreateDto>
 ) => {
-  return useCustomMutation<CreateResponse, ApiErrorResponse, CreateDto>({
+  return useCacherMutation<CreateResponse, ApiErrorResponse, CreateDto>({
     mutationKey: [QueryKeys.CREATE_UNIT],
     mutationFn: (data: CreateDto) => createUnit(data),
     notify: true,
@@ -191,4 +191,4 @@ In your form component:
 
 - **Global consistency:** All mutations share the same notification and cache behavior.
 - **Less boilerplate:** Components only call the mutation without extra logic.
-- **Flexible:** You can still pass local options to `useCustomMutation` for special cases.
+- **Flexible:** You can still pass local options to `useCacherMutation` for special cases.

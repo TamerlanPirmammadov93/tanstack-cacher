@@ -1,6 +1,6 @@
 {
   "name": "tanstack-cacher",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "A lightweight cache management utility for TanStack Query that simplifies adding, updating, deleting, and synchronizing cached data",
   "license": "MIT",
   "repository": {

@@ -7,7 +7,7 @@ import { useCacherContext } from './useCacherContext';
 
 import type { CustomMutationOptions } from './types';
 
-export const useCustomMutation = <TData, TError, TVariables = void>(
+export const useCacherMutation = <TData, TError, TVariables = void>(
   options: CustomMutationOptions<TData, TError, TVariables>,
 ) => {
   const {
