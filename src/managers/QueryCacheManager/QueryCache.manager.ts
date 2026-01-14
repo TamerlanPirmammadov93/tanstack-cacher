@@ -267,6 +267,10 @@ export class QueryCacheManager<TData, TItem> {
     try {
       this.config.queryClient.setQueryData<TData>(this.config.queryKey, (oldData) => {
         if (!oldData) return oldData;
+        if (!updater) {
+          this.invalidate();
+          return oldData;
+        }
 
         const current = getAtPath<TItem[]>(oldData, path, []);
         const safeCurrent = Array.isArray(current) ? current : [];
